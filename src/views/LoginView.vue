@@ -1,26 +1,7 @@
-<template>
-  <div class="login-wrap">
-    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
-      class="demo-ruleForm login-container">
-      <h3 class="title">管理员登录</h3>
-      <el-form-item prop="username">
-        <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
-      </el-form-item>
-      <el-form-item style="width:100%;">
-        <el-button type="primary" style="width:48%;" @click.native.prevent="reset">重 置</el-button>
-        <el-button type="primary" style="width:48%;" @click.native.prevent="login" :loading="logining"  v-loading.fullscreen.lock="fullscreenLoading" >登 录</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
-</template>
-
 <script>
 //运用认证技术 cookie来保存token，这里用js-cookie来操作
 import Cookies from "js-cookie";
-//import axios from 'axios';
+import axios from 'axios';
 export default {
   name: 'LoginView',
   props: {},
@@ -59,21 +40,16 @@ export default {
       this.logining = true;
       let userInfo = { username: this.loginForm.username, password: this.loginForm.password };
       try {
-        //const res = await this.$api.login(JSON.stringify(userInfo));
-        const res = new Promise((resolve) => {
-          setTimeout(() => { // 模拟异步请求
-            resolve({
-              data: {
-                token: 'fake-token', // 模拟的 token
-                name: 'admin',
-              }
-            });
-          }, 2000); // 模拟请求延时
+        const res = await axios.post('http://localhost:8090/login/admin', userInfo, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpdGllcyI6WyJTVVBFUl9BRE1JTiJdLCJleHAiOjE3MzM1MjQ3NTgsImlkIjoiMSIsInVzZXJfbmFtZSI6InJvdW1pb3UifQ.bTS6yqDy5XOede9tPDnOVarPEg6qGmIWy8ETVLZInPCGV5wYB_lvbLgAl7Hb6U3bSvYXbjtxN2E3X-y6HPek24lAcEt9zApNw9LOIkbkwDfh4mAtA40OO36hI_JlBqDVf0UGHiMDFq5xCAw23TNgWvnzssTEXm-2LXzJV3FRdKgyCUmc37v0BMoef9ygZhiWe44Lt2tZV4irmwcskCfA7as8VYdoBTdBG2KQYhH7bMgcaZaCm1AeOb2tWPXsIQo5kpUmzQ1qJFBdd4MrGthXVUgkRBZxBsDYkm4L8eomxZDEIkNe8NsJ_20KZPXxGYWoNbnfRjmp71e_S3uqJE6Vg'
+          }
         });
         Cookies.set('token', res.data.token); // 放置token到Cookie
         sessionStorage.setItem('name', userInfo.username); // 保存用户到本地会话
-        this.logining = true;
-        this.$router.push('/about');  // 登录成功，跳转到主页
+        this.logining = false;
+        this.$router.push('/admin');  // 登录成功，跳转到主页
       } catch (res) {
         //alert(res);
         this.fullscreenLoading = true;
@@ -96,16 +72,32 @@ export default {
       this.$refs.loginForm.resetFields();
     }
   },
-  // $api: {
-  //   login(data) {
-  //     // 实现登录逻辑，比如使用 axios 发送请求
-  //     return axios.post('/about', data);
-  //     ///实现本地伪登入
-  //     // 模拟登录响应
-  //   }
-  // }
 };
+
+
 </script>
+
+
+
+<template>
+  <div class="login-wrap">
+    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
+      class="demo-ruleForm login-container">
+      <h3 class="title">管理员登录</h3>
+      <el-form-item prop="username">
+        <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
+      </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button type="primary" style="width:48%;" @click.native.prevent="reset">重 置</el-button>
+        <el-button type="primary" style="width:48%;" @click.native.prevent="login" :loading="logining"
+          v-loading.fullscreen.lock="fullscreenLoading">登 录</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .login-wrap {

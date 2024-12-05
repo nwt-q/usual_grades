@@ -6,7 +6,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import router from './router';
+//import router from './router';
 
 export default {
     //注意要导入组件

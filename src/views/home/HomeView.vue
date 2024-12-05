@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -64,7 +65,16 @@ export default {
       console.log(key, keyPath);
     },
     TodoList() {
-        this.$router.push('/home/todoList');
+      this.$router.push('/home/todoList');
+    },
+    login() {
+      axios.get("http://localhost:8090/login/admin") // 确保URL字符串正确
+        .then(response => { // 使用箭头函数处理响应
+          console.log(response.data); // 打印响应数据
+        })
+        .catch(error => { // 处理错误
+          console.error("Error:", error); // 打印错误信息
+        });
     }
   }
 };
@@ -77,7 +87,7 @@ export default {
       <!--表头-->
       <el-header>
         <div class="menu-container">
-          
+
           <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
             background-color="#44cef6" text-color="#000000" active-text-color="#FFFFFF">
             <el-menu-item index="1">查询中心</el-menu-item>
@@ -133,7 +143,8 @@ export default {
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="show = !show">查询</el-button>
+              <!-- <el-button type="primary" @click="show = !show">查询</el-button> -->
+              <el-button type="primary" @click="login">查询</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -164,12 +175,12 @@ export default {
       </el-main>
       <!--尾部元素-->
       <el-footer>
-            <div class="block">
-                <el-rate v-model="value" :colors="colors">
-                </el-rate>
-                为网站打个分吧!
-            </div>
-        </el-footer>
+        <div class="block">
+          <el-rate v-model="value" :colors="colors">
+          </el-rate>
+          为网站打个分吧!
+        </div>
+      </el-footer>
     </el-container>
   </div>
 </template>
