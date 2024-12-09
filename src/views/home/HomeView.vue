@@ -1,5 +1,5 @@
 <script>
-import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -41,9 +41,9 @@ export default {
         totalScore: 99
       }],
       imgList: [
-        { img: require('../../assets/Leetcode.png') },
-        { img: require('../../assets/login-bg.jpg') },
-        { img: require('../../assets/L.png') }
+        { img: require('../../assets/index1.jpg') },
+        { img: require('../../assets/index2.jpg') },
+        { img: require('../../assets/index3.jpg') }
       ],
       formInline: {
         user: '',
@@ -52,12 +52,10 @@ export default {
       //评星样式
       value: null,
       colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      // 等同于 { 2: '#99A9BF', 4: { value: '#F7BA2A', excluded: true }, 5: '#FF9900' }
       activeIndex: '1',
       show: false,
+      //头像链接
       avatarSrc: 'https://q6.itc.cn/q_70/images03/20240113/32b5d680ba9c4cd9ae56cd344fcee4be.jpeg',
-      // 控制菜单显示的布尔值
-      isMenuVisible: false
     };
   },
   methods: {
@@ -66,15 +64,6 @@ export default {
     },
     TodoList() {
       this.$router.push('/home/todoList');
-    },
-    login() {
-      axios.get("http://localhost:8090/login/admin") // 确保URL字符串正确
-        .then(response => { // 使用箭头函数处理响应
-          console.log(response.data); // 打印响应数据
-        })
-        .catch(error => { // 处理错误
-          console.error("Error:", error); // 打印错误信息
-        });
     }
   }
 };
@@ -91,32 +80,29 @@ export default {
           <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
             background-color="#44cef6" text-color="#000000" active-text-color="#FFFFFF">
             <el-menu-item index="1">查询中心</el-menu-item>
+
             <el-submenu index="2">
               <template slot="title">学习管理</template>
               <el-menu-item index="2-1">笔记管理</el-menu-item>
               <el-menu-item index="2-2">作业管理</el-menu-item>
               <el-menu-item index="2-3" @click.native="TodoList">代办事管理</el-menu-item>
             </el-submenu>
+
             <el-menu-item index="3" disabled>消息中心</el-menu-item>
+
             <el-menu-item index="4"><a href="http://evlast.jxoj.top" target="_blank">论坛</a></el-menu-item>
-            <el-menu-item index="4"><a href="http://oj.jxoj.top" target="_blank">计算机协会OJ</a></el-menu-item>
-            <el-submenu index="3" style='float:right'>
+
+            <el-menu-item index="5"><a href="http://oj.jxoj.top" target="_blank">计算机协会OJ</a></el-menu-item>
+            <el-submenu index="6" style='float:right'>
               <template slot="title"> <el-avatar :src="avatarSrc"></el-avatar></template>
-              <el-menu-item index="2-1">
+              <el-menu-item index="6-1">
                 <router-link to="/login" class="custom-router-link">管理员登入</router-link>
               </el-menu-item>
-              <el-menu-item index="2-2">选项2</el-menu-item>
-              <el-menu-item index="2-3">选项3</el-menu-item>
+              <el-menu-item index="6-2">选项2</el-menu-item>
+              <el-menu-item index="6-3">选项3</el-menu-item>
             </el-submenu>
           </el-menu>
           <!-- 菜单 -->
-          <div class="menu" v-if="isMenuVisible">
-            <el-menu>
-              <el-menu-item index="1">菜单项1</el-menu-item>
-              <el-menu-item index="2">菜单项2</el-menu-item>
-              <el-menu-item index="3">菜单项3</el-menu-item>
-            </el-menu>
-          </div>
         </div>
       </el-header>
       <!--主要内容展示-->
@@ -143,8 +129,7 @@ export default {
               </el-select>
             </el-form-item>
             <el-form-item>
-              <!-- <el-button type="primary" @click="show = !show">查询</el-button> -->
-              <el-button type="primary" @click="login">查询</el-button>
+              <el-button type="primary" @click="show = !show">查询</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -180,22 +165,20 @@ export default {
           </el-rate>
           为网站打个分吧!
         </div>
+        <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+        <span>创作为了无法计算的价值</span>
+        <el-divider content-position="right">EvLast</el-divider>
       </el-footer>
     </el-container>
   </div>
 </template>
 
 <style>
-.menu-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  background-color: #44cef6;
-  padding: 0 20px;
-  /* 根据需要调整内边距 */
-  height: 60px;
-  /* 根据需要调整高度 */
-  line-height: 60px;
+header{
+  position: sticky;
+    height: 60px;
+    z-index: 99;
+    top: 0;
 }
 
 .menu {
@@ -209,10 +192,6 @@ export default {
 .el-menu-demo {
   flex-grow: 1;
   /* 使菜单占据剩余空间 */
-}
-
-.el-header {
-  padding: 0, 0;
 }
 
 .el-menu-demo .el-menu-item a {

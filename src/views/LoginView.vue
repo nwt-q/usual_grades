@@ -1,6 +1,6 @@
 <script>
 //运用认证技术 cookie来保存token，这里用js-cookie来操作
-import Cookies from "js-cookie";
+//import Cookies from "js-cookie";
 import axios from 'axios';
 export default {
   name: 'LoginView',
@@ -9,21 +9,11 @@ export default {
     return {
       codeUrl: "",
       loginForm: {
-        username: "admin",
+        username: "admin", //默认值
         password: "123456",
         code: "",
         uuid: ""
       },
-      loginRules: {
-        username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" }
-        ],
-        password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" }
-        ],
-        checked: true
-      },
-      //login 定义在根级
       logining: false,
       // 验证码开关
       captchaEnabled: true,
@@ -36,23 +26,10 @@ export default {
     };
   },
   methods: {
+    
     async login() {
       this.logining = true;
-      let userInfo = { username: this.loginForm.username, password: this.loginForm.password };
-      try {
-        const res = await axios.post('http://localhost:8090/login/admin', userInfo, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpdGllcyI6WyJTVVBFUl9BRE1JTiJdLCJleHAiOjE3MzM1MjQ3NTgsImlkIjoiMSIsInVzZXJfbmFtZSI6InJvdW1pb3UifQ.bTS6yqDy5XOede9tPDnOVarPEg6qGmIWy8ETVLZInPCGV5wYB_lvbLgAl7Hb6U3bSvYXbjtxN2E3X-y6HPek24lAcEt9zApNw9LOIkbkwDfh4mAtA40OO36hI_JlBqDVf0UGHiMDFq5xCAw23TNgWvnzssTEXm-2LXzJV3FRdKgyCUmc37v0BMoef9ygZhiWe44Lt2tZV4irmwcskCfA7as8VYdoBTdBG2KQYhH7bMgcaZaCm1AeOb2tWPXsIQo5kpUmzQ1qJFBdd4MrGthXVUgkRBZxBsDYkm4L8eomxZDEIkNe8NsJ_20KZPXxGYWoNbnfRjmp71e_S3uqJE6Vg'
-          }
-        });
-        Cookies.set('token', res.data.token); // 放置token到Cookie
-        sessionStorage.setItem('name', userInfo.username); // 保存用户到本地会话
-        this.logining = false;
-        this.$router.push('/admin');  // 登录成功，跳转到主页
-      } catch (res) {
-        //alert(res);
-        this.fullscreenLoading = true;
+      this.fullscreenLoading = true;
 
         const loading = this.$loading({
           lock: true,
@@ -63,13 +40,21 @@ export default {
         setTimeout(() => {
           loading.close();
         }, 1000);
-
-        this.logining = false;
-        this.$router.push('/admin');  // 登录成功，跳转到主页
-      }
+      axios.get("http://localhost:8090/login/admin?username=admin&password=123456") // 确保URL字符串正确1
+        .then(response => { // 使用箭头函数处理响应
+          console.log(response.data); // 打印响应数据
+          console.log(response.data.data.status);
+          if(response.data.data.status <= 200) {
+            this.$router.push('/admin');
+          }
+          this.logining = false;
+        })
+        .catch(error => { // 处理错误
+          console.error("Error:", error); // 打印错误信息
+        });
     },
     reset() {
-      this.$refs.loginForm.resetFields();
+      this.$refs.loginForm.resetFields();3
     }
   },
 };
